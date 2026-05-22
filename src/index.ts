@@ -10,8 +10,9 @@ const PORT = process.env.PORT ?? 3000;
 app.use(cors({
   origin: [
     'http://localhost:4200',
-    'http://localhost:8100',          // Ionic dev server
-    process.env.FRONTEND_URL ?? 'https://dentoflex.vercel.app/',   // tu URL de producción
+    'http://localhost:8100',
+    'https://dentoflex.vercel.app/',         // Ionic dev server
+    process.env.FRONTEND_URL ?? '',   // tu URL de producción
   ].filter(Boolean),
   credentials: true,
 }))
