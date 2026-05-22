@@ -11,7 +11,7 @@ app.use(cors({
   origin: [
     'http://localhost:4200',
     'http://localhost:8100',
-    'https://dentoflex.vercel.app/',         // Ionic dev server
+    'https://dentoflex.vercel.app',         // Ionic dev server
     process.env.FRONTEND_URL ?? '',   // tu URL de producción
   ].filter(Boolean),
   credentials: true,
