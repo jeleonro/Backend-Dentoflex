@@ -39,9 +39,13 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // ─── Iniciar servidor ──────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n Test Dentoflex API corriendo en http://localhost:${PORT}`);
-  console.log(` Test Health check: http://localhost:${PORT}/health\n`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`\n Test Dentoflex API corriendo en http://localhost:${PORT}`);
+    console.log(` Test Health check: http://localhost:${PORT}/health\n`);
+  });
+}
+
+
 
 export default app;
