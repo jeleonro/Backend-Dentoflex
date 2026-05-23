@@ -3,7 +3,7 @@ import { body, param, query } from 'express-validator';
 import { authMiddleware } from '../middleware/auth.middleware';
 
 import { register, login, logout, refreshToken } from '../controllers/auth.controller';
-import { getMyProfile, updateMyProfile } from '../controllers/paciente.controller';
+import { getMyProfile, updateMyProfile, uploadFoto } from '../controllers/paciente.controller';
 import { getDentistas, getHorariosDisponibles } from '../controllers/dentista.controller';
 import { getMisCitas, crearCita, actualizarCita, cancelarCita } from '../controllers/cita.controller';
 
@@ -46,6 +46,7 @@ router.post(
 // ─── PACIENTES (requieren auth) ──────────────────────
 router.get('/pacientes/me', authMiddleware, getMyProfile);
 router.put('/pacientes/me', authMiddleware, updateMyProfile);
+router.post('/pacientes/me/foto', authMiddleware, uploadFoto);
 
 // ─── DENTISTAS ───────────────────────────────────────
 router.get('/dentistas', authMiddleware, getDentistas);
