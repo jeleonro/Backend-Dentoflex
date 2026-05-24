@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { supabase } from '../supabase/client';
+import { supabase, supabaseAdmin } from '../supabase/client';
+import { Rol } from '../types/database';
 
-// Extiende Request para incluir el usuario autenticado
 declare global {
   namespace Express {
     interface Request {
       user?: {
         id: string;
         email: string;
+        rol: Rol;
       };
     }
   }
@@ -18,14 +19,12 @@ export async function authMiddleware(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const authHeader = req.headers.authorization;
+  const token = req.headers.authorization?.split(' ')[1];
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!token) {
     res.status(401).json({ error: 'Token de acceso requerido' });
     return;
   }
-
-  const token = authHeader.split(' ')[1];
 
   const { data, error } = await supabase.auth.getUser(token);
 
@@ -34,10 +33,24 @@ export async function authMiddleware(
     return;
   }
 
-  req.user = {
-    id: data.user.id,
-    email: data.user.email!,
-  };
+  // El rol se guarda en user_metadata al registrarse
+  const rol: Rol = (data.user.user_metadata?.rol as Rol) ?? 'paciente';
 
+  req.user = { id: data.user.id, email: data.user.email!, rol };
   next();
+}
+
+// Middleware de guard por rol
+export function requireRol(...roles: Rol[]) {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    if (!req.user) {
+      res.status(401).json({ error: 'No autenticado' });
+      return;
+    }
+    if (!roles.includes(req.user.rol)) {
+      res.status(403).json({ error: 'No tienes permisos para esta acción' });
+      return;
+    }
+    next();
+  };
 }

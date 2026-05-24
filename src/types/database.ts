@@ -19,11 +19,12 @@ export interface Paciente {
   email: string;
   created_at: string;
   updated_at: string;
+  rol: Rol;
 }
 
 export type PacienteInsert = Omit<Paciente, 'created_at' | 'updated_at'>;
 export type PacienteUpdate = Partial<Omit<Paciente, 'id' | 'email' | 'created_at' | 'updated_at'>>;
-
+export type Rol = 'paciente' | 'dentista' | 'admin';
 // ---- Dentista ----
 export interface Dentista {
   id: string;
@@ -82,7 +83,24 @@ export interface CitaDto {
   notas?: string;
 }
 
-// ---- Database type for Supabase (simplified) ----
+// Nuevo: perfil de dentista-usuario
+export interface DentistaUsuario {
+  id: string;             // = auth.users.id
+  dentista_id: string;
+  email: string;
+  rol: 'dentista';
+  created_at: string;
+}
+
+// DTO para registrar un dentista como usuario
+export interface RegisterDentistaDto {
+  email: string;
+  password: string;
+  dentista_id: string;    // UUID del dentista ya existente en la tabla dentistas
+}
+
+
+// ---- Database type for Supabase (simplificado) ----
 export interface Database {
   public: {
     Tables: {
