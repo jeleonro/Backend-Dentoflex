@@ -29,6 +29,28 @@ export async function getMensajes(req: Request, res: Response): Promise<void> {
   res.json(data);
 }
 
+// GET /api/chat/:citaId/info  — info básica de la cita para el header
+export async function getInfoCita(req: Request, res: Response): Promise<void> {
+  const { citaId } = req.params;
+  const userId = req.user!.id;
+
+  const tieneAcceso = await verificarAcceso(citaId, userId, req.user!.rol);
+  if (!tieneAcceso) { res.status(403).json({ error: 'Sin acceso' }); return; }
+
+  const { data, error } = await supabaseAdmin
+    .from('citas')
+    .select(`
+      id, fecha, hora, estado,
+      pacientes ( id, nombres, apellidos, foto_url ),
+      dentistas ( id, nombres, apellidos, especialidad, foto_url )
+    `)
+    .eq('id', citaId)
+    .single();
+
+  if (error) { res.status(404).json({ error: 'Cita no encontrada' }); return; }
+  res.json(data);
+}
+
 // POST /api/chat/:citaId  — enviar mensaje
 export async function enviarMensaje(req: Request, res: Response): Promise<void> {
   const { citaId } = req.params;

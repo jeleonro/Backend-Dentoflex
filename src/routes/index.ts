@@ -7,7 +7,7 @@ import { getMyProfile, updateMyProfile, uploadFoto } from '../controllers/pacien
 import { getDentistas, getHorariosDisponibles } from '../controllers/dentista.controller';
 import { getMisCitas, crearCita, actualizarCita, cancelarCita } from '../controllers/cita.controller';
 import { actualizarEstadoCita, getCitasHoy, getMisCitasDentista, getPerfilDentista } from '../controllers/dentista-panel.controller';
-import { getMensajes, enviarMensaje, getNoLeidos } from '../controllers/chat.controller';
+import { getMensajes, enviarMensaje, getNoLeidos, getInfoCita } from '../controllers/chat.controller';
 
 const router = Router();
 
@@ -104,6 +104,7 @@ router.put('/dentista/citas/:id/estado', authMiddleware, requireRol('dentista'),
 // ─── CHAT ─────────────────────────────────────────────
 router.get('/chat/no-leidos', authMiddleware, getNoLeidos);
 router.get('/chat/:citaId', authMiddleware, [param('citaId').isUUID()], getMensajes);
+router.get('/chat/:citaId/info', authMiddleware, [param('citaId').isUUID()], getInfoCita);
 router.post('/chat/:citaId', authMiddleware, [
   param('citaId').isUUID(),
   body('contenido').notEmpty().trim(),
