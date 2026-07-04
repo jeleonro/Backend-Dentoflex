@@ -8,6 +8,7 @@ import { getDentistas, getHorariosDisponibles } from '../controllers/dentista.co
 import { getMisCitas, crearCita, actualizarCita, cancelarCita } from '../controllers/cita.controller';
 import { actualizarEstadoCita, getCitasHoy, getMisCitasDentista, getPerfilDentista } from '../controllers/dentista-panel.controller';
 import { getMensajes, enviarMensaje, getNoLeidos, getInfoCita } from '../controllers/chat.controller';
+import { supabaseAdmin } from '../supabase/client';
 
 const router = Router();
 
@@ -36,6 +37,28 @@ router.post(
   ],
   login
 );
+
+
+// Esta ruta es solo para pruebas y desarrollo, no debería estar en producción (ya que solo crea admins)
+// router.post('/auth/make-admin', async (req, res) => {
+//   const { userId } = req.body;
+
+//   const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
+//     userId,
+//     {
+//       user_metadata: {
+//         rol: 'admin'
+//       }
+//     }
+//   );
+
+//   if (error) {
+//     return res.status(400).json(error);
+//   }
+
+//   res.json(data);
+// });
+
 
 router.post(
   '/auth/forgot-password',
