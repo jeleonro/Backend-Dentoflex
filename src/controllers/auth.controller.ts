@@ -75,6 +75,26 @@ export async function registerDentista(req: Request, res: Response): Promise<voi
   res.status(201).json({ message: `Usuario dentista creado para ${dentista.nombres}`, user: { id: authData.user.id, email } });
 }
 
+// POST /api/auth/forgot-password
+export async function forgotPassword(req: Request, res: Response): Promise<void> {
+  const { email } = req.body;
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.FRONTEND_URL}/reset-password`
+  });
+
+  if (error) {
+    res.status(400).json({
+      error: error.message
+    });
+    return;
+  }
+
+  res.json({
+    message: 'Se envió el enlace de recuperación al correo.'
+  });
+}
+
 
 // POST /api/auth/login
 export async function login(req: Request, res: Response): Promise<void> {

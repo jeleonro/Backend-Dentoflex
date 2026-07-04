@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 import { authMiddleware, requireRol } from '../middleware/auth.middleware';
 
-import { register, login, logout, refreshToken, registerDentista } from '../controllers/auth.controller';
+import { register, login, logout, refreshToken, registerDentista, forgotPassword } from '../controllers/auth.controller';
 import { getMyProfile, updateMyProfile, uploadFoto } from '../controllers/paciente.controller';
 import { getDentistas, getHorariosDisponibles } from '../controllers/dentista.controller';
 import { getMisCitas, crearCita, actualizarCita, cancelarCita } from '../controllers/cita.controller';
@@ -35,6 +35,14 @@ router.post(
     body('password').notEmpty().withMessage('Contraseña requerida'),
   ],
   login
+);
+
+router.post(
+  '/auth/forgot-password',
+  [
+    body('email').isEmail().withMessage('Email inválido')
+  ],
+  forgotPassword
 );
 
 router.post('/auth/logout', logout);
